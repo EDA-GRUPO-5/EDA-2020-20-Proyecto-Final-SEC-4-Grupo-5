@@ -43,6 +43,7 @@ Este código está basado en las implementaciones propuestas en:
 def newGraph(size, cmpfunction, directed):
     """
     Crea un grafo vacio
+
     Args:
         size: Tamaño inicial del grafo
         comparefunction: Funcion de comparacion
@@ -75,6 +76,7 @@ def newGraph(size, cmpfunction, directed):
 def insertVertex(graph, vertex):
     """
     Inserta el vertice vertex en el grafo graph
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice que se desea insertar
@@ -96,6 +98,7 @@ def insertVertex(graph, vertex):
 def removeVertex(graph, vertex):
     """
     Remueve el vertice vertex del grafo graph
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice que se desea remover
@@ -111,8 +114,10 @@ def removeVertex(graph, vertex):
 def numVertices(graph):
     """
     Retorna el numero de vertices del  grafo graph
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
+
     Returns:
         El numero de vertices del grafo
     Raises:
@@ -127,8 +132,10 @@ def numVertices(graph):
 def numEdges(graph):
     """
     Retorna el numero de arcos en el grafo graph
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
+
     Returns:
         El numero de vertices del grafo
     Raises:
@@ -145,6 +152,7 @@ def vertices(graph):
     Retorna una lista con todos los vertices del grafo graph
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
+
     Returns:
         La lista con los vertices del grafo
     Raises:
@@ -160,8 +168,10 @@ def vertices(graph):
 def edges(graph):
     """
     Retorna una lista con todos los arcos del grafo graph
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
+
     Returns:
         Una lista con los arcos del grafo
     Raises:
@@ -188,9 +198,11 @@ def edges(graph):
 def degree(graph, vertex):
     """
     Retorna el numero de arcos asociados al vertice vertex
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice del que se desea conocer el grado
+
     Returns:
         El grado del vertice
     Raises:
@@ -207,9 +219,11 @@ def degree(graph, vertex):
 def indegree(graph, vertex):
     """
     Retorna el numero de arcos que llegan al vertice vertex
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice del que se desea conocer el grado
+
     Returns:
         El grado del vertice
     Raises:
@@ -227,9 +241,11 @@ def indegree(graph, vertex):
 def outdegree(graph, vertex):
     """
     Retorna el numero de arcos que salen del grafo vertex
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice del que se desea conocer el grado
+
     Returns:
         El grado del vertice
     Raises:
@@ -248,10 +264,12 @@ def outdegree(graph, vertex):
 def getEdge(graph, vertexa, vertexb):
     """
     Retorna el arco asociado a los vertices vertexa ---- vertexb
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertexa: Vertice de inicio
         vertexb: Vertice destino
+
     Returns:
         El arco que une los verices vertexa y vertexb
     Raises:
@@ -280,9 +298,11 @@ def getEdge(graph, vertexa, vertexb):
 def containsVertex(graph, vertex):
     """
     Retorna si el vertice vertex esta presente en el grafo
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: Vertice que se busca
+
     Returns:
        True si el vertice esta presente
     Raises:
@@ -300,11 +320,13 @@ def addEdge(graph, vertexa, vertexb, weight=0):
     Si el grafo es no dirigido se adiciona dos veces el mismo arco,
     en el mismo orden
     Si el grafo es dirigido se adiciona solo el arco vertexa --> vertexb
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertexa: Vertice de inicio
         vertexb: Vertice de destino
         wight: peso del arco
+
     Returns:
        El grafo con el nuevo arco
     Raises:
@@ -332,9 +354,11 @@ def addEdge(graph, vertexa, vertexb, weight=0):
 def adjacents(graph, vertex):
     """
     Retorna una lista con todos los vertices adyacentes al vertice vertex
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice del que se quiere la lista
+
     Returns:
         La lista de adyacencias
     Raises:
@@ -361,9 +385,11 @@ def adjacentEdges(graph, vertex):
     """
     Retorna una lista con todos los arcos asociados a los vértices
     adyacentes de vertex
+
     Args:
         graph: El grafo sobre el que se ejecuta la operacion
         vertex: El vertice del que se quiere la lista
+
     Returns:
         La lista de arcos adyacentes
     Raises:
@@ -375,17 +401,3 @@ def adjacentEdges(graph, vertex):
         return lst
     except Exception as exp:
         error.reraise(exp, 'ajlist:adjacentEdges')
-
-
-#=-=-=-=-=-=-=-=-=-=-=-=-
-def addEdgeCount(edge):
-    try:
-        return e.addEdgeCount(edge)
-    except Exception as exp:
-        error.reraise(exp, 'ajlist:addEdgeCount')
-
-def edgeCount(edge):
-    try:
-        return e.count(edge)
-    except Exception as exp:
-        error.reraise(exp, 'ajlist:countEdge')

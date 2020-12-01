@@ -239,7 +239,6 @@ def addEdge(graph, vertexa, vertexb, weight):
     """
     if (graph['type'] == "ADJ_LIST"):
         return alt.addEdge(graph, vertexa, vertexb, weight)
-        
 
 
 def containsVertex(graph, vertex):
@@ -292,13 +291,3 @@ def adjacentEdges(graph, vertex):
     """
     if (graph['type'] == "ADJ_LIST"):
         return alt.adjacentEdges(graph, vertex)
-
-
-#=-=-=-=-=-=-=-=-=-=-=-=-
-def addEdgeCount(graph, edge):
-    if (graph['type'] == "ADJ_LIST"):
-        return alt.addEdgeCount(edge)
-
-def edgeCount(graph, edge):
-    if (graph['type'] == "ADJ_LIST"):
-        return alt.edgeCount(edge)
