@@ -109,14 +109,14 @@ def optionFive():
     print(f'Duracion estimada: {tripDuration}')
     print(f'Por la ruta: \n<')
     if not(route is None):
-        if (lt.isEmpty(route)):
+        if not (lt.isEmpty(route)):
             for i in range(1, lt.size(route)+1):
                 commArea = lt.getElement(route, i)
                 print(f'\t{i}) De {commArea["vertexA"]} a {commArea["vertexB"]}')
         else:
-            print('\tNo hay estaciones de por medio')
+            print('\tNo hay estaciones de por medio(B)')
     else:
-        print('\tNo hay estaciones de por medio')
+        print('\tNo hay estaciones de por medio(A)')
     print('>')
 
 """

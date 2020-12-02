@@ -274,15 +274,15 @@ def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     #Dijkstra para conseguir la duracion y las comunnity areas para llegar al destino
     structure = djk.Dijkstra(chicagoAnalyzer['communityTrip'], idStart)
     tripDuration = djk.distTo(structure, idEnd)
-    path = djk.pathTo(structure, idEnd)
+    path = djk.pathTo(structure, idEnd) if djk.hasPathTo(structure, idEnd) else st.newStack()
 
     #Se usa _ porque la variable no importa en si, solo es necesario hacerle pop al stack
     for _ in range(st.size(path)):
         lt.addLast(comRoute, st.pop(path))
-
     #Para conseguir el tiempo en formato Hora:Minuto
     #Dado que hay dos for anidados, en comparacion a la complejidad del resto del algoritmo
     #Con O(n^2)
+    startTime = None
     for time in range(lt.size(keysInRange)):
         #starTime antes de hacerle format
         startTimeb4F = lt.getElement(keysInRange, time)
@@ -294,9 +294,8 @@ def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
             #Verificar que sea el arco que buscamos
             if start == idStart and lt.isPresent(comRoute, end):
                 startTime = f'{startTimeb4F.hour:02}:{startTimeb4F.minute:02}'
-
                 return startTime, comRoute, tripDuration
-    return 2
+    return startTime, comRoute, tripDuration
 
 # =-=-=-=-=-=-=-=-=-=-=-=
 # Funciones usadas
