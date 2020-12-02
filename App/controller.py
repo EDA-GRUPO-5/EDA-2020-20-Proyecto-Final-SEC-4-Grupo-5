@@ -58,7 +58,7 @@ def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     Returns:
     DateTime, Arraylist, float
     """
-    inferior = datetime.strptime(inferior, '%HH:%M')
-    superior = datetime.strptime(superior, '%HH:%M')
+    inferior = datetime.strptime(inferior, '%H:%M')
+    superior = datetime.strptime(superior, '%H:%M')
     
-    return model.mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd)
+    return model.Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd)

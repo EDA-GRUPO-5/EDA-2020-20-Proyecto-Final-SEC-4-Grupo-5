@@ -14,9 +14,10 @@ file1s = 'taxi-trips-wrvz-psew-subset-smallS.csv'
 file1ss = 'taxi-trips-wrvz-psew-subset-smallS+.csv'
 file1sss = 'taxi-trips-wrvz-psew-subset-smallS++.csv'
 file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
+file5 = 'taxi-trips-wrvz-psew-subset-smallest+.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
-filename = file1ssss
+filename = file1s
 recursionLimit = 8000
 
 # ---------------------------------------------------
@@ -95,12 +96,12 @@ def optionFive():
 
             centiM = False
 
-    idCommunityAreaStart = int(input('Ingrese la id del area comun de origen\n>'))
-    idCommunityAreaEnd = int(input('Ingrese la id del area comun destino\n>'))
+    idCommunityAreaStart = str(float(input('Ingrese la id del area comun de origen\n>')))
+    idCommunityAreaEnd = str(float(input('Ingrese la id del area comun destino\n>')))
 
     inferior = f'{hhI:02}:{mmI:02}'; superior = f'{hhS:02}:{mmI:02}'
 
-    print(f'Consiguiendo el mejor horario entre [{idCommunityAreaStart}>-<{idCommunityAreaStart}] en el rango de horas {inferior}>-<{superior}')
+    print(f'Consiguiendo el mejor horario entre el rango de horas [{inferior}>-<{superior}] para las estaciones [{idCommunityAreaStart}>-<{idCommunityAreaEnd}]')
 
     startTime, route, tripDuration = controller.mejorHorario(analyzer, inferior, superior, idCommunityAreaStart, idCommunityAreaEnd)
 
@@ -110,7 +111,7 @@ def optionFive():
     if not lt.isEmpty(route):
         for i in range(1, lt.size(route)+1):
             commArea = lt.getElement(route, i)
-            print(f'\t{i}) De {commArea[0]} a {commArea[1]}')
+            print(f'\t{i}) De {commArea["vertexA"]} a {commArea["vertexB"]}')
     else:
         print('\tNo hay estaciones de por medio')
     print('>')

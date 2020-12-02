@@ -1,3 +1,5 @@
+from DISClib.ADT.graph import vertices
+from DISClib.ADT.orderedmap import keys
 from os import cpu_count
 import config
 from DISClib.ADT import graph as gr
@@ -37,19 +39,19 @@ def newChicagoAnalyzer():
     }
 
     chicagoAnalyzer['taxi'] = m.newMap  (
-                                        numelements=1000,
+                                        numelements=100,
                                         comparefunction=compareComm
                                         )
 
     chicagoAnalyzer['communityTrip'] = gr.newGraph  (
                                                     datastructure='ADJ_LIST',
                                                     directed=True,
-                                                    size=1000,
+                                                    size=2000,
                                                     comparefunction=compareComm
                                                     )
 
     chicagoAnalyzer['company'] = m.newMap   (
-                                            numelements=1000,
+                                            numelements=50,
                                             comparefunction=compareComm
                                             )
 
@@ -59,7 +61,7 @@ def newChicagoAnalyzer():
                                             )
 
     chicagoAnalyzer['tripID_edge'] = m.newMap   (
-                                                numelements=100,
+                                                numelements=2000,
                                                 comparefunction=compareComm
                                                 )
 
@@ -71,11 +73,11 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
     """
     #Clean Numeric
     cleanComArea(infoline)
-    cleanTripMile(infoline)
+    cleanTripMileSeconds(infoline)
 
     origin = str(infoline['pickup_community_area'])
     destiny = str(infoline['dropoff_community_area'])
-    tripTime = infoline['trip_seconds']
+    tripTime = float(infoline['trip_seconds'])
     idTrip = infoline['trip_id']
 
     #Graph: Vertex and Edge
@@ -92,9 +94,6 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
 
     #Ordered Map Time
     addTimeToTaxi(chicagoAnalyzer, infoline)
-
-    #Get edge by tripID
-    addEdgeByTripID(chicagoAnalyzer, idTrip, origin, destiny)
 
     return chicagoAnalyzer
 
@@ -129,9 +128,8 @@ def addComArea(chicagoAnalyzer, vertex):
     """
     Inserta el vertice que representa a un Community Area en el grafo
     """
-
     if not gr.containsVertex(chicagoAnalyzer['communityTrip'], vertex): gr.insertVertex(chicagoAnalyzer['communityTrip'], vertex)
-
+    
     return chicagoAnalyzer
 
 def addTrip(chicagoAnalyzer, origin, destiny, tripTime, idTrip):
@@ -144,9 +142,8 @@ def addTrip(chicagoAnalyzer, origin, destiny, tripTime, idTrip):
     if edge is None:
         gr.addEdge(chicagoAnalyzer['communityTrip'], origin, destiny, tripTime)
         edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
-        edge['name'] = lt.newList()
     
-    lt.addLast(edge['name'], idTrip)
+    m.put(chicagoAnalyzer['tripID_edge'], idTrip, edge)
 
     return chicagoAnalyzer
 
@@ -174,7 +171,8 @@ def addTimeToTaxi(chicagoAnalyzer, line):
     """
     tripStart = line['trip_start_timestamp']
     taxiTrip = dt.strptime(tripStart, '%Y-%m-%dT%H:%M:%S.%f')
-    time = taxiTrip.strftime('%H:%M')
+    timeB = taxiTrip.strftime('%H:%M')
+    time = dt.strptime(timeB, '%H:%M')
     entry = om.get(chicagoAnalyzer['timeTrip'], time)
 
     if entry is None:
@@ -186,17 +184,6 @@ def addTimeToTaxi(chicagoAnalyzer, line):
 
     return chicagoAnalyzer
 
-def addEdgeByTripID(chicagoAnalyzer, trip_id, origin, destiny):
-    """
-    Funcion para conseguir origen y destino teniendo el id del viaje
-    """
-    entry = m.get(chicagoAnalyzer['tripID_edge'], trip_id)
-
-    if entry is None:
-        edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
-        m.put(chicagoAnalyzer['tripID_edge'], trip_id, edge)
-
-    return chicagoAnalyzer
 # ==============================
 # Funciones de Comparacion/Limpieza
 # ==============================
@@ -226,15 +213,16 @@ def compareComm(station, keyvaluestation):
 
 def cleanComArea(line):
 
-    if line['dropoff_community_area'] == '': line['dropoff_community_area'] = '-1'
+    if line['dropoff_community_area'] in {'', None}: line['dropoff_community_area'] = '0'
 
-    if line['pickup_community_area'] == '': line['pickup_community_area'] = '-1'
+    if line['pickup_community_area'] in {'', None}: line['pickup_community_area'] = '0'
 
     return line
 
-def cleanTripMile(line):
+def cleanTripMileSeconds(line):
 
-    if line['trip_miles'] == '': line['trip_miles'] = 0
+    if line['trip_miles'] in {'', None}: line['trip_miles'] = '0'
+    if line['trip_seconds'] in {'', None}: line['trip_seconds'] = 0
 
     return line
 
@@ -256,16 +244,32 @@ def totalStations(chicagoAnalyzer):
 
 def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
 
-    commArea = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compareID)
+    commArea = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compareComm)
+
+    keysInRange = om.keys(chicagoAnalyzer['timeTrip'], inferior, superior)
 
     structure = djk.Dijkstra(chicagoAnalyzer['communityTrip'], idStart)
-    time = djk.distTo(structure, idEnd)
+    timeTrip = djk.distTo(structure, idEnd)
     path = djk.pathTo(structure, idEnd)
 
-    for i in range(st.size(path)):
+    for _ in range(st.size(path)):
         lt.addLast(commArea, st.pop(path))
 
-    return startTime, commArea, time
+    for time in range(lt.size(keysInRange)):
+        temp = lt.getElement(keysInRange, time)
+        route = om.get(chicagoAnalyzer['timeTrip'], temp)['value']
+        for timeID in range(lt.size(route)):
+            start, end = getEdgebyTripID(chicagoAnalyzer, lt.getElement(route, timeID))
+            try:
+                if start == idStart and lt.isPresent(commArea, end):
+                    print('ou yeah')
+                    return temp, commArea, timeTrip
+            except:
+                print(end)
+                print(commArea)
+
+    
+    return None, commArea, timeTrip
 
 # =-=-=-=-=-=-=-=-=-=-=-=
 # Funciones usadas
@@ -277,3 +281,11 @@ def lessequal(k1,k2=None):
 
 def greatequal(k1,k2=None):
     return not(lessequal(k1,k2))
+
+def getEdgebyTripID(chicagoAnalyzer, tripID):
+
+    entry = m.get(chicagoAnalyzer['tripID_edge'], tripID)['value']
+
+    if entry is not None:
+        return (entry['vertexA'], entry['vertexB'])
+    return None
