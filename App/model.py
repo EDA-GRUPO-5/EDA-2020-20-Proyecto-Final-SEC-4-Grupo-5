@@ -80,12 +80,12 @@ def addTripToTaxi(chicagoAnalyzer, line):
     entry = m.get(chicagoAnalyzer['taxi'], line['taxi_id'])
 
     if entry is None:
-        info = m.newMap(numelements=7)
+        info = m.newMap(numelements=7, comparefunction=compareComm)
 
         m.put(info, 'timeTotal', line['trip_seconds'])
-        #m.put(info, 'mileTotal', line['trip_miles'])
-        #m.put(info, 'numServices', 1)
-        #m.put(info, 'money', None)
+        m.put(info, 'mileTotal', line['trip_miles'])
+        m.put(info, 'numServices', 1)
+        m.put(info, 'money', None)
         #m.put(info, '', lt.newList())
 
         m.put(chicagoAnalyzer['taxi'], line['taxi_id'], info)
