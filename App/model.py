@@ -22,6 +22,9 @@ de creacion y consulta sobre las estructuras de datos.
 # Funciones para agregar informacion al grafo
 
 def newChicagoAnalyzer():
+    """
+    Funcion para inicializar el analyzer
+    """
 
     chicagoAnalyzer = {
         'taxi': None,
@@ -46,6 +49,9 @@ def newChicagoAnalyzer():
     return chicagoAnalyzer
 
 def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
+    """
+    Cargar los datos en el Analyzer
+    """
     #Clean Numeric
     cleanComArea(infoline)
     cleanTripMile(infoline)
@@ -67,8 +73,6 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
     #Map Company
     addTaxiToCompany(chicagoAnalyzer, infoline)
 
-    
-    
     return chicagoAnalyzer
 
 # ==============================
@@ -76,6 +80,10 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
 # ==============================
 
 def addTripToTaxi(chicagoAnalyzer, line):
+    """
+    Aniade al mapa de 'taxi' la informacion del mismo \n
+    Key: Id del taxi; Value: {Tiempo de los recorridos total, Millas recorridas en total, Cantidad de Servicios dados, Dinero ganado}
+    """
 
     entry = m.get(chicagoAnalyzer['taxi'], line['taxi_id'])
 
@@ -95,12 +103,18 @@ def addTripToTaxi(chicagoAnalyzer, line):
     return chicagoAnalyzer
 
 def addComArea(chicagoAnalyzer, vertex):
+    """
+    Inserta el vertice que representa a un Community Area en el grafo
+    """
 
     if not gr.containsVertex(chicagoAnalyzer['communityTrip'], vertex): gr.insertVertex(chicagoAnalyzer['communityTrip'], vertex)
 
     return chicagoAnalyzer
 
 def addTrip(chicagoAnalyzer, origin, destiny, tripTime):
+    """
+    Crea el arco(camino) entre los dos vertices(el de origen y el de destino)
+    """
     
     edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
 
@@ -109,6 +123,9 @@ def addTrip(chicagoAnalyzer, origin, destiny, tripTime):
     return chicagoAnalyzer
 
 def addTaxiToCompany(chicagoAnalyzer, line):
+    """
+    Aniade la id del taxi a la compania a la que pertenece
+    """
 
     entry = m.get(chicagoAnalyzer['company'], line['company'])
 
@@ -129,7 +146,7 @@ def addTaxiToCompany(chicagoAnalyzer, line):
 
 def compareID(id1, id2):
     """
-    Compara dos rutas
+    Compara dos numeros
     """
     if (id1 == id2):
         return 0
@@ -140,7 +157,7 @@ def compareID(id1, id2):
 
 def compareComm(station, keyvaluestation):
     """
-    Compara dos estaciones
+    Compara dos valores, str y dict
     """
     stationid = keyvaluestation['key']
     if (station == stationid):
@@ -151,6 +168,7 @@ def compareComm(station, keyvaluestation):
         return -1
 
 def cleanComArea(line):
+
     if line['dropoff_community_area'] == '': line['dropoff_community_area'] = '-1'
 
     if line['pickup_community_area'] == '': line['pickup_community_area'] = '-1'
@@ -163,6 +181,23 @@ def cleanTripMile(line):
 
     return line
 
+
+# ------------------------------
+# Para el req 2
+# ------------------------------
+
+def totalConnections(chicagoAnalyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+    return gr.numEdges(chicagoAnalyzer['communityTrip'])
+
+def totalStations(chicagoAnalyzer):
+    """
+    Retorna el total de vertices del grafo
+    """
+    return gr.numVertices(chicagoAnalyzer['communityTrip'])
+
 # ==============================
 # Funciones de Requerimientos
 # ==============================
@@ -170,9 +205,9 @@ def cleanTripMile(line):
 def Req3():
     pass
 
-#=-=-=-=-=-=-=-=-=-=-=-=
-#Funciones usadas
-#=-=-=-=-=-=-=-=-=-=-=-=
+# =-=-=-=-=-=-=-=-=-=-=-=
+# Funciones usadas
+# =-=-=-=-=-=-=-=-=-=-=-=
 def lessequal(k1,k2=None):
     if k2 == None:
         return True

@@ -16,7 +16,7 @@ file1sss = 'taxi-trips-wrvz-psew-subset-smallS++.csv'
 file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
-filename = file1
+filename = file1ssss
 recursionLimit = 8000
 
 # ---------------------------------------------------
@@ -38,13 +38,13 @@ def printMenu():
 def optionTwo():
     print("\nCargando información de bicicletas de Nueva York ....")
     controller.loadFile(citibike, filename)
-    #numedges = controller.totalConnections(citibike)
-    #numvertex = controller.totalStations(citibike)
-    #print('Numero de vértices: ' + str(numvertex))
-    #print('Numero de arcos: ' + str(numedges))
-    print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
+    numedges = controller.totalConnections(citibike)
+    numvertex = controller.totalStations(citibike)
+    print(f'Numero de vértices: {numvertex}')
+    print(f'Numero de arcos: {numedges}')
+    print(f'El limite de recursion actual: {sys.getrecursionlimit()}')
     sys.setrecursionlimit(recursionLimit)
-    print('El limite de recursion se ajusta a: ' + str(recursionLimit))
+    print(f'El limite de recursion se ajusta a: {recursionLimit}')
 
 def optionThree():
     """
@@ -72,26 +72,26 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n>')
 
-    if int(inputs) == 1:
-        print("\nInicializando....")
+    if int(inputs[0]) == 1:
+        print('\nInicializando....')
         # cont es el controlador que se usará de acá en adelante
         citibike = controller.init()
 
     elif int(inputs[0]) == 2:
         executiontime = timeit.timeit(optionTwo, number=1)
-        print("\nTiempo de ejecución: " + str(executiontime))
+        print(f'\nTiempo de ejecución: {executiontime}')
 
     elif int(inputs[0]) == 3:
         executiontime = timeit.timeit(optionThree, number=1)
-        print("\nTiempo de ejecución: " + str(executiontime))
+        print(f'\nTiempo de ejecución: {executiontime}')
 
     elif int(inputs[0]) == 4:
         executiontime = timeit.timeit(optionFour, number=1)
-        print("\nTiempo de ejecución: " + str(executiontime))
+        print(f'\nTiempo de ejecución: {executiontime}')
 
     elif int(inputs[0]) == 5:
         executiontime = timeit.timeit(optionFive, number=1)
-        print("\nTiempo de ejecución: " + str(executiontime))
+        print(f'\nTiempo de ejecución: {executiontime}')
     
     else:
         sys.exit(0)
