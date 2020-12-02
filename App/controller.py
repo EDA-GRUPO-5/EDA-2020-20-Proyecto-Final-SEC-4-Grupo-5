@@ -1,3 +1,4 @@
+from datetime import datetime
 import config as cf
 from App import model
 import csv
@@ -50,3 +51,14 @@ def totalConnections(analyzer):
 # ---------------------------------------------------
 #  Funciones para Reqs
 # ---------------------------------------------------
+
+def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
+    """
+    Req 3\n
+    Returns:
+    DateTime, Arraylist, float
+    """
+    inferior = datetime.strptime(inferior, '%HH:%M')
+    superior = datetime.strptime(superior, '%HH:%M')
+    
+    return model.mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd)

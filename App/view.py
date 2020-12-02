@@ -37,9 +37,9 @@ def printMenu():
 
 def optionTwo():
     print("\nCargando información de bicicletas de Nueva York ....")
-    controller.loadFile(citibike, filename)
-    numedges = controller.totalConnections(citibike)
-    numvertex = controller.totalStations(citibike)
+    controller.loadFile(analyzer, filename)
+    numedges = controller.totalConnections(analyzer)
+    numvertex = controller.totalStations(analyzer)
     print(f'Numero de vértices: {numvertex}')
     print(f'Numero de arcos: {numedges}')
     print(f'El limite de recursion actual: {sys.getrecursionlimit()}')
@@ -62,7 +62,58 @@ def optionFive():
     """
     Req 3
     """
-    pass
+    centiH = centiM = True
+    while centiH:
+
+        try:
+            hhI = int(input('Ingrese la hora inferior en el rango\n>'))
+            hhS = int(input('Ingrese la hora superior en el rango\n>'))
+
+        except ValueError:
+            print('Ingrese valores validos')
+
+        else:
+            hhI = hhI%24; hhS = hhS%24
+
+            hhI, hhS = min(hhI, hhS), max(hhI, hhS)
+
+            centiH = False
+    
+    while centiM:
+
+        try:
+            mmI = int(input('Ingrese el minuto inferior en el rango\n>'))
+            mmS = int(input('Ingrese el minuto superior en el rango\n>'))
+
+        except ValueError:
+            print('Ingrese valores validos')
+
+        else:
+            mmI = mmI%60; mmS = mmS%60
+
+            if hhI == hhS: mmI, mmS = min(mmI, mmS), max(mmI, mmS)
+
+            centiM = False
+
+    idCommunityAreaStart = int(input('Ingrese la id del area comun de origen\n>'))
+    idCommunityAreaEnd = int(input('Ingrese la id del area comun destino\n>'))
+
+    inferior = f'{hhI:02}:{mmI:02}'; superior = f'{hhS:02}:{mmI:02}'
+
+    print(f'Consiguiendo el mejor horario entre [{idCommunityAreaStart}>-<{idCommunityAreaStart}] en el rango de horas {inferior}>-<{superior}')
+
+    startTime, route, tripDuration = controller.mejorHorario(analyzer, inferior, superior, idCommunityAreaStart, idCommunityAreaEnd)
+
+    print(f'Hora recomendada de inicio: {startTime}')
+    print(f'Duracion estimada: {tripDuration}')
+    print(f'Por la ruta: \n<')
+    if not lt.isEmpty(route):
+        for i in range(1, lt.size(route)+1):
+            commArea = lt.getElement(route, i)
+            print(f'\t{i}) De {commArea[0]} a {commArea[1]}')
+    else:
+        print('\tNo hay estaciones de por medio')
+    print('>')
 
 """
 Menu principal
@@ -75,7 +126,7 @@ while True:
     if int(inputs[0]) == 1:
         print('\nInicializando....')
         # cont es el controlador que se usará de acá en adelante
-        citibike = controller.init()
+        analyzer = controller.init()
 
     elif int(inputs[0]) == 2:
         executiontime = timeit.timeit(optionTwo, number=1)

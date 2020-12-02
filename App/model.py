@@ -2,7 +2,11 @@ from os import cpu_count
 import config
 from DISClib.ADT import graph as gr
 from DISClib.ADT import map as m
+from DISClib.ADT import orderedmap as om
+from datetime import datetime as dt
 from DISClib.ADT import list as lt
+from DISClib.ADT import stack as st
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.DataStructures import listiterator as it
 from DISClib.Utils import error as error
 
@@ -36,16 +40,29 @@ def newChicagoAnalyzer():
                                         numelements=1000,
                                         comparefunction=compareComm
                                         )
+
     chicagoAnalyzer['communityTrip'] = gr.newGraph  (
                                                     datastructure='ADJ_LIST',
                                                     directed=True,
                                                     size=1000,
                                                     comparefunction=compareComm
                                                     )
+
     chicagoAnalyzer['company'] = m.newMap   (
                                             numelements=1000,
                                             comparefunction=compareComm
                                             )
+
+    chicagoAnalyzer['timeTrip'] = om.newMap (
+                                            omaptype='BST',
+                                            comparefunction=compareID
+                                            )
+
+    chicagoAnalyzer['tripID_edge'] = m.newMap   (
+                                                numelements=100,
+                                                comparefunction=compareComm
+                                                )
+
     return chicagoAnalyzer
 
 def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
@@ -59,19 +76,25 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
     origin = str(infoline['pickup_community_area'])
     destiny = str(infoline['dropoff_community_area'])
     tripTime = infoline['trip_seconds']
-
+    idTrip = infoline['trip_id']
 
     #Graph: Vertex and Edge
     addComArea(chicagoAnalyzer, origin)
     addComArea(chicagoAnalyzer, destiny)
 
-    addTrip(chicagoAnalyzer, origin, destiny, tripTime)
+    addTrip(chicagoAnalyzer, origin, destiny, tripTime, idTrip)
 
     #Map Taxi
     addTripToTaxi(chicagoAnalyzer, infoline)
 
     #Map Company
     addTaxiToCompany(chicagoAnalyzer, infoline)
+
+    #Ordered Map Time
+    addTimeToTaxi(chicagoAnalyzer, infoline)
+
+    #Get edge by tripID
+    addEdgeByTripID(chicagoAnalyzer, idTrip, origin, destiny)
 
     return chicagoAnalyzer
 
@@ -111,14 +134,19 @@ def addComArea(chicagoAnalyzer, vertex):
 
     return chicagoAnalyzer
 
-def addTrip(chicagoAnalyzer, origin, destiny, tripTime):
+def addTrip(chicagoAnalyzer, origin, destiny, tripTime, idTrip):
     """
     Crea el arco(camino) entre los dos vertices(el de origen y el de destino)
     """
     
     edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
 
-    if edge is None: gr.addEdge(chicagoAnalyzer['communityTrip'], origin, destiny, tripTime)
+    if edge is None:
+        gr.addEdge(chicagoAnalyzer['communityTrip'], origin, destiny, tripTime)
+        edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
+        edge['name'] = lt.newList()
+    
+    lt.addLast(edge['name'], idTrip)
 
     return chicagoAnalyzer
 
@@ -139,7 +167,36 @@ def addTaxiToCompany(chicagoAnalyzer, line):
     
     return chicagoAnalyzer
 
-#def 
+def addTimeToTaxi(chicagoAnalyzer, line):
+    """
+    Para el Req 3\n
+    Key: Fecha; Value: lista de taxis que estan en esa hora
+    """
+    tripStart = line['trip_start_timestamp']
+    taxiTrip = dt.strptime(tripStart, '%Y-%m-%dT%H:%M:%S.%f')
+    time = taxiTrip.strftime('%H:%M')
+    entry = om.get(chicagoAnalyzer['timeTrip'], time)
+
+    if entry is None:
+        taxiLt = lt.newList(cmpfunction=compareID)
+        om.put(chicagoAnalyzer['timeTrip'], time, taxiLt)
+
+    else:
+        lt.addLast(entry['value'], line['trip_id'])
+
+    return chicagoAnalyzer
+
+def addEdgeByTripID(chicagoAnalyzer, trip_id, origin, destiny):
+    """
+    Funcion para conseguir origen y destino teniendo el id del viaje
+    """
+    entry = m.get(chicagoAnalyzer['tripID_edge'], trip_id)
+
+    if entry is None:
+        edge = gr.getEdge(chicagoAnalyzer['communityTrip'], origin, destiny)
+        m.put(chicagoAnalyzer['tripID_edge'], trip_id, edge)
+
+    return chicagoAnalyzer
 # ==============================
 # Funciones de Comparacion/Limpieza
 # ==============================
@@ -181,11 +238,6 @@ def cleanTripMile(line):
 
     return line
 
-
-# ------------------------------
-# Para el req 2
-# ------------------------------
-
 def totalConnections(chicagoAnalyzer):
     """
     Retorna el total arcos del grafo
@@ -202,8 +254,18 @@ def totalStations(chicagoAnalyzer):
 # Funciones de Requerimientos
 # ==============================
 
-def Req3():
-    pass
+def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
+
+    commArea = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compareID)
+
+    structure = djk.Dijkstra(chicagoAnalyzer['communityTrip'], idStart)
+    time = djk.distTo(structure, idEnd)
+    path = djk.pathTo(structure, idEnd)
+
+    for i in range(st.size(path)):
+        lt.addLast(commArea, st.pop(path))
+
+    return startTime, commArea, time
 
 # =-=-=-=-=-=-=-=-=-=-=-=
 # Funciones usadas
