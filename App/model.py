@@ -293,8 +293,7 @@ def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
             start, end = getEdgebyTripID(chicagoAnalyzer, lt.getElement(route, timeID))
             #Verificar que sea el arco que buscamos
             if start == idStart and lt.isPresent(comRoute, end):
-                startTimeF = startTimeb4F.strftime('%H:%M')
-                startTime = dt.strptime(startTimeF, '%H:%M')
+                startTime = f'{startTimeb4F.hour:02}:{startTimeb4F.minute:02}'
 
                 return startTime, comRoute, tripDuration
     return 2
