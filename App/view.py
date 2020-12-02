@@ -10,6 +10,10 @@ assert config
 # ---------------------------------------------------
 
 file1 = 'taxi-trips-wrvz-psew-subset-small.csv'
+file1s = 'taxi-trips-wrvz-psew-subset-smallS.csv'
+file1ss = 'taxi-trips-wrvz-psew-subset-smallS+.csv'
+file1sss = 'taxi-trips-wrvz-psew-subset-smallS++.csv'
+file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
 filename = file1
