@@ -61,4 +61,19 @@ def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     inferior = datetime.strptime(inferior, '%H:%M')
     superior = datetime.strptime(superior, '%H:%M')
     
-    return model.Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd)
+    rta = model.Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd)
+
+    if type(rta) == tuple: #La respuesta esperada
+        return rta
+
+    else:
+        if rta == 0: #Vertice no contenido en el grafo
+            print('Las community areas ingresadas no son validas')
+
+        elif rta == 1: #El rango de fechas no retorno fechas(El rango de fechas es vacio)
+            print('El rango de tiempo ingresado no contiene viajes')
+
+        else: #Otro tipo de error
+            print('Sucedio un error inesperado')
+
+        return None, None, None

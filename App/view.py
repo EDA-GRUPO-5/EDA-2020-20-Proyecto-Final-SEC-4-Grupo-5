@@ -17,7 +17,7 @@ file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
 file5 = 'taxi-trips-wrvz-psew-subset-smallest+.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
-filename = file1s
+filename = file1
 recursionLimit = 8000
 
 # ---------------------------------------------------
@@ -108,10 +108,13 @@ def optionFive():
     print(f'Hora recomendada de inicio: {startTime}')
     print(f'Duracion estimada: {tripDuration}')
     print(f'Por la ruta: \n<')
-    if not lt.isEmpty(route):
-        for i in range(1, lt.size(route)+1):
-            commArea = lt.getElement(route, i)
-            print(f'\t{i}) De {commArea["vertexA"]} a {commArea["vertexB"]}')
+    if not(route is None):
+        if (lt.isEmpty(route)):
+            for i in range(1, lt.size(route)+1):
+                commArea = lt.getElement(route, i)
+                print(f'\t{i}) De {commArea["vertexA"]} a {commArea["vertexB"]}')
+        else:
+            print('\tNo hay estaciones de por medio')
     else:
         print('\tNo hay estaciones de por medio')
     print('>')

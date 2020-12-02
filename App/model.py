@@ -1,3 +1,4 @@
+from DISClib.ADT.stack import newStack
 from DISClib.ADT.graph import vertices
 from DISClib.ADT.orderedmap import keys
 from os import cpu_count
@@ -199,6 +200,17 @@ def compareID(id1, id2):
     else:
         return -1
 
+def compareDict(id1, dic2):
+    """
+    Compara dos numeros
+    """
+    if (id1 in {dic2['vertexA'], dic2['vertexB']}):
+        return 0
+    elif (id1 > dic2['vertexA'] or id1> dic2['vertexB']):
+        return 1
+    else:
+        return -1
+
 def compareComm(station, keyvaluestation):
     """
     Compara dos valores, str y dict
@@ -243,33 +255,49 @@ def totalStations(chicagoAnalyzer):
 # ==============================
 
 def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
+    """
+    Req 3\n
+    Returns: Tiempo de inicio del trayecto, las community areas en medio del trayecto, la duracion del trayecto
+    """
+    #Si no contiene el vertice el proceso se corta de raiz y no hace mas operaciones innecesarias DE MORGAN
+    if not(gr.containsVertex(chicagoAnalyzer['communityTrip'], idStart) and gr.containsVertex(chicagoAnalyzer['communityTrip'], idStart)): return 0
 
-    commArea = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compareComm)
+    #Lista con las community areas, se entregara como parte de la respuesta
+    comRoute = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compareDict)
 
+    #Conseguir los viajes que sucedieron en el rango de hora especificado
     keysInRange = om.keys(chicagoAnalyzer['timeTrip'], inferior, superior)
 
+    #Si el rango de horas no contiene alguna hora de trayecto
+    if (lt.isEmpty(keysInRange)): return 1
+
+    #Dijkstra para conseguir la duracion y las comunnity areas para llegar al destino
     structure = djk.Dijkstra(chicagoAnalyzer['communityTrip'], idStart)
-    timeTrip = djk.distTo(structure, idEnd)
+    tripDuration = djk.distTo(structure, idEnd)
     path = djk.pathTo(structure, idEnd)
 
+    #Se usa _ porque la variable no importa en si, solo es necesario hacerle pop al stack
     for _ in range(st.size(path)):
-        lt.addLast(commArea, st.pop(path))
+        lt.addLast(comRoute, st.pop(path))
 
+    #Para conseguir el tiempo en formato Hora:Minuto
+    #Dado que hay dos for anidados, en comparacion a la complejidad del resto del algoritmo
+    #Con O(n^2)
     for time in range(lt.size(keysInRange)):
-        temp = lt.getElement(keysInRange, time)
-        route = om.get(chicagoAnalyzer['timeTrip'], temp)['value']
+        #starTime antes de hacerle format
+        startTimeb4F = lt.getElement(keysInRange, time)
+        route = om.get(chicagoAnalyzer['timeTrip'], startTimeb4F)['value']
+
+        #Para conseguir la id del trayecto y con la funcion de getEdgebyTripID() se conseguir ambos vertices
         for timeID in range(lt.size(route)):
             start, end = getEdgebyTripID(chicagoAnalyzer, lt.getElement(route, timeID))
-            try:
-                if start == idStart and lt.isPresent(commArea, end):
-                    print('ou yeah')
-                    return temp, commArea, timeTrip
-            except:
-                print(end)
-                print(commArea)
+            #Verificar que sea el arco que buscamos
+            if start == idStart and lt.isPresent(comRoute, end):
+                startTimeF = startTimeb4F.strftime('%H:%M')
+                startTime = dt.strptime(startTimeF, '%H:%M')
 
-    
-    return None, commArea, timeTrip
+                return startTime, comRoute, tripDuration
+    return 2
 
 # =-=-=-=-=-=-=-=-=-=-=-=
 # Funciones usadas
