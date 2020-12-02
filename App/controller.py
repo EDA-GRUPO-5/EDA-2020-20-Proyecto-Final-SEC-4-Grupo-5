@@ -11,7 +11,7 @@ def init():
     Llama la funcion de inicializacion  del modelo.
     """
     # analyzer es utilizado para interactuar con el modelo
-    citibike = model.newCitibike()
+    citibike = model.newChicagoAnalyzer()
     return citibike
 
 # ---------------------------------------------------
@@ -27,7 +27,7 @@ def loadFile(analyzer, tripfile):
     input_file = csv.DictReader(open(tripfile, encoding="utf-8"),
                                 delimiter=",")
     for line in input_file:
-        model.addStationRoute(analyzer, line)
+        model.loadChicagoAnalyzer(analyzer, line)
     
     return analyzer
 
