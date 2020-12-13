@@ -12,6 +12,7 @@ from DISClib.ADT import stack as st
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.DataStructures import listiterator as it
 from DISClib.Utils import error as error
+from DISClib.Algorithms.Sorting import insertionsort as insor
 
 from datetime import date 
 
@@ -66,6 +67,12 @@ def newChicagoAnalyzer():
                                                 comparefunction=compareComm
                                                 )
 
+    chicagoAnalyzer['dateIndex'] = om.newMap (omaptype='BST',
+                                              comparefunction=compareDates
+                                              )
+
+    chicagoAnalyzer['numServicios'] = 0
+
     return chicagoAnalyzer
 
 def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
@@ -95,6 +102,9 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
 
     #Ordered Map Time
     addTimeToTaxi(chicagoAnalyzer, infoline)
+
+    #Ordered Date Map
+    addDateToTaxi(chicagoAnalyzer, infoline)
 
     return chicagoAnalyzer
 
@@ -165,6 +175,22 @@ def addTaxiToCompany(chicagoAnalyzer, line):
     
     return chicagoAnalyzer
 
+def addDateToTaxi(chicagoAnalyzer, line):
+    tripStart = line['trip_start_timestamp']
+    taxiTrip = dt.strptime(tripStart, '%Y-%m-%dT%H:%M:%S.%f')
+    date = taxiTrip.strftime('%Y-%m-%d')
+    entry = om.get(chicagoAnalyzer['dateIndex'], date)
+    if entry is None:
+        taxiLt = lt.newList(cmpfunction=compareID)
+        om.put(chicagoAnalyzer['dateIndex'], date, taxiLt)
+
+    else:
+        if float(line['trip_miles']) > 0.0 and float(line['trip_total']) > 0.0:
+            puntos = (float(line['trip_miles'])/float(line['trip_total']))
+            lt.addLast(entry['value'], (line['trip_id'], puntos))
+
+    return chicagoAnalyzer
+
 def addTimeToTaxi(chicagoAnalyzer, line):
     """
     Para el Req 3\n
@@ -223,6 +249,23 @@ def compareComm(station, keyvaluestation):
     else:
         return -1
 
+def compareDates(date1, date2):
+    """
+    Compara dos ids de libros, id es un identificador
+    y entry una pareja llave-valor
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
+
+def comparePoints(element1, element2):
+    if float(element1[1]) > float(element2[1]):
+        return True
+    return False
+
 def cleanComArea(line):
 
     if line['dropoff_community_area'] in {'', None}: line['dropoff_community_area'] = '0'
@@ -254,9 +297,55 @@ def totalStations(chicagoAnalyzer):
 # Funciones de Requerimientos
 # ==============================
 
+def getTaxisByDate(chicagoAnalyzer, num, initialDate):
+    """
+    Req B Parte 1
+    """
+    lstValues = om.values(chicagoAnalyzer['dateIndex'], initialDate, initialDate)
+    lstIdsPoints = lt.newList(datastructure='ARRAY_LIST')
+    for pos in range(1, lt.size(lstValues)+1):
+        value = lt.getElement(lstValues, pos)
+        for pos1 in range(1, lt.size(value)+1):
+            value1= lt.getElement(value, pos1)
+            lt.addLast(lstIdsPoints, (value1[0], value1[1]*chicagoAnalyzer['numServicios']))
+    
+    insor.insertionSort1(lstIdsPoints, comparePoints)
+    
+    print("\nLos Ids de los " + str(num) + " taxis con más puntos son: ")
+    count = 1
+    print("\n")
+    for pos2 in range(1, num+1):
+        taxi = lt.getElement(lstIdsPoints, pos2)
+        print(str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]) + " puntos")
+        count += 1
+        num -= 1
+
+def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
+    """
+    Req B Parte 2
+    """
+    lstValues = om.values(chicagoAnalyzer['dateIndex'], initialDate, finalDate)
+    lstIdsPoints = lt.newList(datastructure='ARRAY_LIST')
+    for pos in range(1, lt.size(lstValues)+1):
+        value = lt.getElement(lstValues, pos)
+        for pos1 in range(1, lt.size(value)+1):
+            value1= lt.getElement(value, pos1)
+            lt.addLast(lstIdsPoints, (value1[0], value1[1]*chicagoAnalyzer['numServicios']))
+    
+    insor.insertionSort1(lstIdsPoints, comparePoints)
+    
+    print("\nLos Ids de los " + str(num) + " taxis con más puntos son: ")
+    count = 1
+    print("\n")
+    for pos2 in range(1, num+1):
+        taxi = lt.getElement(lstIdsPoints, pos2)
+        print("\n" + str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]) + " puntos")
+        count += 1
+        num -= 1          
+
 def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
-    Req 3\n
+    Req C\n
     Returns: Tiempo de inicio del trayecto, las community areas en medio del trayecto, la duracion del trayecto
     """
     #Si no contiene el vertice el proceso se corta de raiz y no hace mas operaciones innecesarias DE MORGAN
