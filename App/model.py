@@ -301,13 +301,13 @@ def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     """
     Req B Parte 1
     """
-    lstValues = om.values(chicagoAnalyzer['dateIndex'], initialDate, initialDate)
+    
+    lstValues = om.get(chicagoAnalyzer['dateIndex'], initialDate)['value']
     lstIdsPoints = lt.newList(datastructure='ARRAY_LIST')
+
     for pos in range(1, lt.size(lstValues)+1):
-        value = lt.getElement(lstValues, pos)
-        for pos1 in range(1, lt.size(value)+1):
-            value1= lt.getElement(value, pos1)
-            lt.addLast(lstIdsPoints, (value1[0], value1[1]*chicagoAnalyzer['numServicios']))
+        taxi = lt.getElement(lstValues, pos)
+        lt.addLast(lstIdsPoints, (taxi[0], taxi[1]*chicagoAnalyzer['numServicios']))
     
     insor.insertionSort1(lstIdsPoints, comparePoints)
     
@@ -326,11 +326,12 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
     """
     lstValues = om.values(chicagoAnalyzer['dateIndex'], initialDate, finalDate)
     lstIdsPoints = lt.newList(datastructure='ARRAY_LIST')
+
     for pos in range(1, lt.size(lstValues)+1):
-        value = lt.getElement(lstValues, pos)
-        for pos1 in range(1, lt.size(value)+1):
-            value1= lt.getElement(value, pos1)
-            lt.addLast(lstIdsPoints, (value1[0], value1[1]*chicagoAnalyzer['numServicios']))
+        date = lt.getElement(lstValues, pos)
+        for pos1 in range(1, lt.size(date)+1):
+            taxi= lt.getElement(date, pos1)
+            lt.addLast(lstIdsPoints, (taxi[0], taxi[1]*chicagoAnalyzer['numServicios']))
     
     insor.insertionSort1(lstIdsPoints, comparePoints)
     
@@ -341,7 +342,7 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
         taxi = lt.getElement(lstIdsPoints, pos2)
         print("\n" + str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]) + " puntos")
         count += 1
-        num -= 1          
+        num -= 1           
 
 def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
