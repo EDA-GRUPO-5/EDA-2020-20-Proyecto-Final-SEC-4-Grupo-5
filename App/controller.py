@@ -67,7 +67,7 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
     """
     Req B Parte 2
     """
-    if (om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False or om.contains(chicagoAnalyzer['dateIndex'], finalDate) == False:
+    if om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False or om.contains(chicagoAnalyzer['dateIndex'], finalDate) == False:
         return False
     else:
         model.getTaxisByDate(chicagoAnalyzer, num, initialDate, finalDate)
