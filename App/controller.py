@@ -58,19 +58,13 @@ def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     """
     Req B Parte 1
     """
-    if om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False:
-        return False
-    else:
-        model.getTaxisByDate(chicagoAnalyzer, num, initialDate)
+    model.getTaxisByDate(chicagoAnalyzer, num, initialDate)
 
 def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
     """
     Req B Parte 2
     """
-    if om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False or om.contains(chicagoAnalyzer['dateIndex'], finalDate) == False:
-        return False
-    else:
-        model.getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate)
+    model.getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate)
 
 def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
