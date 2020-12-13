@@ -325,7 +325,7 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
         date = lt.getElement(lstValues, pos)
         for pos1 in range(1, lt.size(date)+1):
             taxi= lt.getElement(date, pos1)
-            lt.addLast(lstIdsPoints, (taxi[0], taxi[1]*chicagoAnalyzer['numServicios']))
+            lt.addLast(lstIdsPoints, (taxi[0], taxi[1]))
     
     insor.insertionSort1(lstIdsPoints, comparePoints)
     
@@ -334,9 +334,9 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
     print("\n")
     for pos2 in range(1, num+1):
         taxi = lt.getElement(lstIdsPoints, pos2)
-        print("\n" + str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]) + " puntos")
+        print(str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]*chicagoAnalyzer['numServicios']) + " puntos")
         count += 1
-        num -= 1           
+        num -= 1         
 
 def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
