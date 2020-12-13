@@ -2,6 +2,7 @@ from datetime import datetime
 import config as cf
 from App import model
 import csv
+from DISClib.ADT import orderedmap as om
 
 # ---------------------------------------------------
 #  Inicializacion
@@ -29,6 +30,7 @@ def loadFile(analyzer, tripfile):
                                 delimiter=",")
     for line in input_file:
         model.loadChicagoAnalyzer(analyzer, line)
+        analyzer['numServicios'] += 1
     
     return analyzer
 
@@ -52,9 +54,27 @@ def totalConnections(analyzer):
 #  Funciones para Reqs
 # ---------------------------------------------------
 
+def getTaxisByDate(chicagoAnalyzer, num, initialDate):
+    """
+    Req B Parte 1
+    """
+    if om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False:
+        return False
+    else:
+        model.getTaxisByDate(chicagoAnalyzer, num, initialDate)
+
+def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
+    """
+    Req B Parte 2
+    """
+    if (om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False or om.contains(chicagoAnalyzer['dateIndex'], finalDate) == False:
+        return False
+    else:
+        model.getTaxisByDate(chicagoAnalyzer, num, initialDate, finalDate)
+
 def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
-    Req 3\n
+    Req C\n
     Returns:
     DateTime, Arraylist, float
     """
