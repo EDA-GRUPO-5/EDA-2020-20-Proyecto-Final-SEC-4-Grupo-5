@@ -70,7 +70,7 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
     if om.contains(chicagoAnalyzer['dateIndex'], initialDate) == False or om.contains(chicagoAnalyzer['dateIndex'], finalDate) == False:
         return False
     else:
-        model.getTaxisByDate(chicagoAnalyzer, num, initialDate, finalDate)
+        model.getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate)
 
 def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
