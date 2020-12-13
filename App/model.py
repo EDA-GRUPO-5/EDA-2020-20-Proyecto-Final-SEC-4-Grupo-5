@@ -302,21 +302,15 @@ def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     Req B Parte 1
     """
     
-    lstValues = om.get(chicagoAnalyzer['dateIndex'], initialDate)['value']
-    lstIdsPoints = lt.newList(datastructure='ARRAY_LIST')
-
-    for pos in range(1, lt.size(lstValues)+1):
-        taxi = lt.getElement(lstValues, pos)
-        lt.addLast(lstIdsPoints, (taxi[0], taxi[1]*chicagoAnalyzer['numServicios']))
-    
+    lstIdsPoints = om.get(chicagoAnalyzer['dateIndex'], initialDate)['value']
     insor.insertionSort1(lstIdsPoints, comparePoints)
     
     print("\nLos Ids de los " + str(num) + " taxis con más puntos son: ")
     count = 1
     print("\n")
-    for pos2 in range(1, num+1):
-        taxi = lt.getElement(lstIdsPoints, pos2)
-        print(str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]) + " puntos")
+    for pos in range(1, num+1):
+        taxi = lt.getElement(lstIdsPoints, pos)
+        print(str(count) + ". " + str(taxi[0]) + " con " + str(taxi[1]*chicagoAnalyzer['numServicios']) + " puntos")
         count += 1
         num -= 1
 
