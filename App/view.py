@@ -4,6 +4,7 @@ from App import controller
 from DISClib.ADT import list as lt
 import timeit
 assert config
+from DISClib.ADT import orderedmap as om
 
 # ---------------------------------------------------
 #  Variables
@@ -65,7 +66,7 @@ def optionFour():
     if option == 1:
         num = int(input("\nIngrese la cantidad de taxis: "))
         initialDate = input("\nIngrese la fecha (YYYY-MM-DD): ")
-        if controller.getTaxisByDate(analyzer, num, initialDate) == False:
+        if om.contains(analyzer['dateIndex'], initialDate) == False:
             print('\nPor favor ingrese una fecha que se encuentre en el archivo.')
         else:
             controller.getTaxisByDate(analyzer, num, initialDate)
@@ -74,7 +75,7 @@ def optionFour():
         num = int(input("\nIngrese la cantidad de taxis: "))
         initialDate = input("\nIngrese la fecha inicial (YYYY-MM-DD): ")
         finalDate = input("\nIngrese la fecha final (YYYY-MM-DD): ")
-        if controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate) == False:
+        if om.contains(analyzer['dateIndex'], initialDate) == False or om.contains(analyzer['dateIndex'], finalDate) == False:
             print('\nPor favor ingrese fechas que se encuentren en el archivo.')
         else:
             controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate)
