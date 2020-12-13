@@ -17,7 +17,7 @@ file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
 file5 = 'taxi-trips-wrvz-psew-subset-smallest+.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
-filename = file1
+filename = file5
 recursionLimit = 8000
 
 # ---------------------------------------------------
@@ -30,14 +30,14 @@ def printMenu():
     print("Bienvenido")
     print("1- Inicializar ")
     print("2- Cargar información ")
-    print("3- <Req 1> Reporte de informacion Companias & Taxis")
-    print("4- <Req 2> Sistemas de puntos y premios a Taxis")
-    print("5- <Req 3> Mejor horario en Taxi")
+    print("3- <Req A> Reporte de informacion Companias & Taxis")
+    print("4- <Req B> Taxis con más puntos")
+    print("5- <Req C> Mejor horario en Taxi")
     print("0- Salir")
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 
 def optionTwo():
-    print("\nCargando información de bicicletas de Nueva York ....")
+    print("\nCargando información de taxis de Chicago....")
     controller.loadFile(analyzer, filename)
     numedges = controller.totalConnections(analyzer)
     numvertex = controller.totalStations(analyzer)
@@ -49,19 +49,42 @@ def optionTwo():
 
 def optionThree():
     """
-    Req 1
+    Req A
     """
-    pass  
+    pass
 
 def optionFour():
     """
-    Req 2
+    Req B
     """    
-    pass
+    print("\nElija entre las siguientes opciones: ")
+    print("\n1. Identificar los N taxis con más puntos para en una fecha determinada")
+    print("2. Identificar los M taxis con más puntos para un rango entre dos fechas determinadas")
+    option = int(input("\nOpción: "))
+    
+    if option == 1:
+        num = int(input("\nIngrese la cantidad de taxis: "))
+        initialDate = input("\nIngrese la fecha (YYYY-MM-DD): ")
+        if controller.getTaxisByDate(analyzer, num, initialDate) == False:
+            print('\nPor favor verifique que los datos ingresados sean válidos.')
+        else:
+            controller.getTaxisByDate(analyzer, num, initialDate)
+
+    elif option == 2:
+        num = int(input("\nIngrese la cantidad de taxis: "))
+        initialDate = input("\nIngrese la fecha inicial (YYYY-MM-DD): ")
+        finalDate = input("\nIngrese la fecha final (YYYY-MM-DD): ")
+        if controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate) == False:
+            print('\nPor favor verifique que los datos ingresados sean válidos.')
+        else:
+            controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate)
+
+    else:
+        print("\nPor favor ingrese una opción válida.")
 
 def optionFive():
     """
-    Req 3
+    Req C
     """
     centiH = centiM = True
     while centiH:
