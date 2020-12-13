@@ -75,7 +75,7 @@ def optionFour():
         initialDate = input("\nIngrese la fecha inicial (YYYY-MM-DD): ")
         finalDate = input("\nIngrese la fecha final (YYYY-MM-DD): ")
         if controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate) == False:
-            print('\nPor favor ingrese una fecha que se encuentre en el archivo.')
+            print('\nPor favor ingrese fechas que se encuentren en el archivo.')
         else:
             controller.getTaxisByDateRange(analyzer, num, initialDate, finalDate)
 
