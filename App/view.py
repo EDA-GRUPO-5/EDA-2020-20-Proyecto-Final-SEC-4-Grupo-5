@@ -18,6 +18,7 @@ file1ssss = 'taxi-trips-wrvz-psew-subset-smallest.csv'
 file5 = 'taxi-trips-wrvz-psew-subset-smallest+.csv'
 file2 = 'taxi-trips-wrvz-psew-subset-medium.csv'
 file3 = 'taxi-trips-wrvz-psew-subset-large.csv'
+copia = 'copia_smallest_modificado.csv'
 filename = file5
 recursionLimit = 8000
 
