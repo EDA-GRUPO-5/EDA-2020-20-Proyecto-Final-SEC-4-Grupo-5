@@ -112,6 +112,50 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
 # Funciones de Load
 # ==============================
 
+def reporteInformacion(chicagoAnalyzer, m, n):
+    """
+    Req 1
+    Return: # Total Taxis, # Total Compañias, Top M de compañias con más taxis afiliados, 
+    Top N de compañias con más servicios prestados
+    """
+    
+    reporteCompleto = lt.newList(datastructure='ARRAY_LIST')
+
+    taxis = chicagoAnalyzer['taxi']['size'] #NUMERO TOTAL DE TAXIS
+    companias = chicagoAnalyzer['company']['size'] #NUMERO TOTAL DE COMPANIAS
+
+    #TOP M DE COMPANIAS POR CANTIDAD DE TAXIS AFILIADOS 
+    taxisAfiliados = chicagoAnalyzer['company']['table']
+    topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+
+    for value in taxisAfiliados.values():
+        cantidadTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+        for i in value:
+            x = i.get('first')
+            if x != None:
+                y = x.get('info')
+                key = y.get('key')
+                value = y.get('value')
+                size = value.get('size') #Obtener el tamaño de cada compania (cantidad de taxis afiliados)
+                lt.addLast(cantidadTaxisAfiliados, (key, size))
+        cantidadTaxisAfiliados['elements'].sort(key=lambda taxis: taxis[1]) #Ordenar de mayor a menor
+        cantidadTaxisAfiliados['elements'].reverse()
+        topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+        for i in range(1, m+1): #Top M
+            resultado = lt.getElement(cantidadTaxisAfiliados, i)
+            lt.addLast(topTaxisAfiliados, resultado)
+        print('Top de compañias con más taxis afiliados: ', topTaxisAfiliados['elements'])
+
+    #TOP N DE COMPANIAS CON MAS SERVICIOS PRESTADOS
+    #topServiciosPrestados = lt.newList(datastructure='ARRAY_LIST')
+
+    lt.addLast(reporteCompleto, taxis)
+    lt.addLast(reporteCompleto, companias)
+    #lt.addLast(reporteCompleto, topTaxisAfiliados['elements'])
+    #lt.addLast(reporteCompleto, topServiciosPrestados['elements'])
+
+    return reporteCompleto['elements']
+
 def addTripToTaxi(chicagoAnalyzer, line):
     """
     Aniade al mapa de 'taxi' la informacion del mismo \n
