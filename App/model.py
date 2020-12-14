@@ -13,6 +13,7 @@ from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.DataStructures import listiterator as it
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import insertionsort as insor
+from DISClib.Algorithms.Sorting import mergesort as ms
 
 from datetime import date 
 
@@ -112,50 +113,6 @@ def loadChicagoAnalyzer(chicagoAnalyzer, infoline):
 # Funciones de Load
 # ==============================
 
-def reporteInformacion(chicagoAnalyzer, m, n):
-    """
-    Req 1
-    Return: # Total Taxis, # Total Compañias, Top M de compañias con más taxis afiliados, 
-    Top N de compañias con más servicios prestados
-    """
-    
-    reporteCompleto = lt.newList(datastructure='ARRAY_LIST')
-
-    taxis = chicagoAnalyzer['taxi']['size'] #NUMERO TOTAL DE TAXIS
-    companias = chicagoAnalyzer['company']['size'] #NUMERO TOTAL DE COMPANIAS
-
-    #TOP M DE COMPANIAS POR CANTIDAD DE TAXIS AFILIADOS 
-    taxisAfiliados = chicagoAnalyzer['company']['table']
-    topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
-
-    for value in taxisAfiliados.values():
-        cantidadTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
-        for i in value:
-            x = i.get('first')
-            if x != None:
-                y = x.get('info')
-                key = y.get('key')
-                value = y.get('value')
-                size = value.get('size') #Obtener el tamaño de cada compania (cantidad de taxis afiliados)
-                lt.addLast(cantidadTaxisAfiliados, (key, size))
-        cantidadTaxisAfiliados['elements'].sort(key=lambda taxis: taxis[1]) #Ordenar de mayor a menor
-        cantidadTaxisAfiliados['elements'].reverse()
-        topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
-        for i in range(1, m+1): #Top M
-            resultado = lt.getElement(cantidadTaxisAfiliados, i)
-            lt.addLast(topTaxisAfiliados, resultado)
-        print('Top de compañias con más taxis afiliados: ', topTaxisAfiliados['elements'])
-
-    #TOP N DE COMPANIAS CON MAS SERVICIOS PRESTADOS
-    #topServiciosPrestados = lt.newList(datastructure='ARRAY_LIST')
-
-    lt.addLast(reporteCompleto, taxis)
-    lt.addLast(reporteCompleto, companias)
-    #lt.addLast(reporteCompleto, topTaxisAfiliados['elements'])
-    #lt.addLast(reporteCompleto, topServiciosPrestados['elements'])
-
-    return reporteCompleto['elements']
-
 def addTripToTaxi(chicagoAnalyzer, line):
     """
     Aniade al mapa de 'taxi' la informacion del mismo \n
@@ -171,11 +128,13 @@ def addTripToTaxi(chicagoAnalyzer, line):
         m.put(info, 'mileTotal', line['trip_miles'])
         m.put(info, 'numServices', 1)
         m.put(info, 'money', None)
-        #m.put(info, '', lt.newList())
 
         m.put(chicagoAnalyzer['taxi'], line['taxi_id'], info)
     else:
         info = entry['value']
+        num = m.get(info, 'numServices')['value']+1
+        m.put(info, 'numServices', num)
+        m.put(chicagoAnalyzer['taxi'], line['taxi_id'], info)
     
     return chicagoAnalyzer
 
@@ -340,6 +299,73 @@ def totalStations(chicagoAnalyzer):
 # ==============================
 # Funciones de Requerimientos
 # ==============================
+def Req1RepInfo(chicagoAnalyzer, mTop, nTop):
+    if 0 in {mTop, nTop}: return 0
+
+    totalTaxi = m.size(chicagoAnalyzer['taxi'])
+    totalCompany = m.size(chicagoAnalyzer['company'])
+    topMCompanyTaxi = lt.newList(datastructure='ARRAY_LIST')
+    topNCompanyService = lt.newList(datastructure='ARRAY_LIST')
+
+    #Obtener taxis por compania
+    ltCompany = m.keySet(chicagoAnalyzer['company'])
+    for company in range(lt.size(ltCompany)):
+        size = m.get(chicagoAnalyzer['company'], lt.getElement(ltCompany, company))['value']
+        lt.addLast(topMCompanyTaxi, (lt.getElement(ltCompany, company),lt.size(size)))
+        count = 0
+        for idTaxi in range(lt.size(size)):
+            infoT = m.get(chicagoAnalyzer['taxi'], lt.getElement(size, idTaxi))['value']
+            count += m.get(infoT, 'numServices')['value']
+        lt.addLast(topNCompanyService, (lt.getElement(ltCompany, company),count))
+
+    ms.mergesort(topMCompanyTaxi, comparePoints)
+    ms.mergesort(topNCompanyService, comparePoints)
+
+    return totalTaxi, totalCompany, lt.subList(topMCompanyTaxi, 1, mTop)['elements'], lt.subList(topNCompanyService, 1, nTop)['elements']
+
+def reporteInformacion(chicagoAnalyzer, m, n):
+    """
+    Req 1
+    Return: # Total Taxis, # Total Compañias, Top M de compañias con más taxis afiliados, 
+    Top N de compañias con más servicios prestados
+    """
+    
+    reporteCompleto = lt.newList(datastructure='ARRAY_LIST')
+
+    taxis = chicagoAnalyzer['taxi']['size'] #NUMERO TOTAL DE TAXIS
+    companias = chicagoAnalyzer['company']['size'] #NUMERO TOTAL DE COMPANIAS
+
+    #TOP M DE COMPANIAS POR CANTIDAD DE TAXIS AFILIADOS 
+    taxisAfiliados = chicagoAnalyzer['company']['table']
+    topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+
+    for value in taxisAfiliados.values():
+        cantidadTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+        for i in value:
+            x = i.get('first')
+            if x != None:
+                y = x.get('info')
+                key = y.get('key')
+                value = y.get('value')
+                size = value.get('size') #Obtener el tamaño de cada compania (cantidad de taxis afiliados)
+                lt.addLast(cantidadTaxisAfiliados, (key, size))
+        cantidadTaxisAfiliados['elements'].sort(key=lambda taxis: taxis[1]) #Ordenar de mayor a menor
+        cantidadTaxisAfiliados['elements'].reverse()
+        topTaxisAfiliados = lt.newList(datastructure='ARRAY_LIST')
+        for i in range(1, m+1): #Top M
+            resultado = lt.getElement(cantidadTaxisAfiliados, i)
+            lt.addLast(topTaxisAfiliados, resultado)
+        print('Top de compañias con más taxis afiliados: ', topTaxisAfiliados['elements'])
+
+    #TOP N DE COMPANIAS CON MAS SERVICIOS PRESTADOS
+    #topServiciosPrestados = lt.newList(datastructure='ARRAY_LIST')
+
+    lt.addLast(reporteCompleto, taxis)
+    lt.addLast(reporteCompleto, companias)
+    #lt.addLast(reporteCompleto, topTaxisAfiliados['elements'])
+    #lt.addLast(reporteCompleto, topServiciosPrestados['elements'])
+
+    return reporteCompleto['elements']
 
 def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     """
@@ -409,7 +435,6 @@ def Req3MejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
         lt.addLast(comRoute, st.pop(path))
     #Para conseguir el tiempo en formato Hora:Minuto
     #Dado que hay dos for anidados, en comparacion a la complejidad del resto del algoritmo
-    #Con O(n^2)
     startTime = None
     for time in range(lt.size(keysInRange)):
         #starTime antes de hacerle format

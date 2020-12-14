@@ -59,7 +59,8 @@ def reporteInformacion(chicagoAnalyzer, m, n):
     Req A
     Reporte de Informacion Companias y Taxis
     """
-    return model.reporteInformacion(chicagoAnalyzer, m, n)
+    return model.Req1RepInfo(chicagoAnalyzer, m, n)
+    #return model.reporteInformacion(chicagoAnalyzer, m, n)
 
 def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     """
