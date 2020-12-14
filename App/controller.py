@@ -56,7 +56,7 @@ def totalConnections(analyzer):
 
 def reporteInformacion(chicagoAnalyzer, m, n):
     """
-    Req 1
+    Req A
     Reporte de Informacion Companias y Taxis
     """
     return model.reporteInformacion(chicagoAnalyzer, m, n)
