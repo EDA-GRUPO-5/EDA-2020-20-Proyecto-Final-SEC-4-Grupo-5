@@ -54,6 +54,13 @@ def totalConnections(analyzer):
 #  Funciones para Reqs
 # ---------------------------------------------------
 
+def reporteInformacion(chicagoAnalyzer, m, n):
+    """
+    Req A
+    Reporte de Informacion Companias y Taxis
+    """
+    return model.reporteInformacion(chicagoAnalyzer, m, n)
+
 def getTaxisByDate(chicagoAnalyzer, num, initialDate):
     """
     Req B Parte 1
@@ -68,7 +75,7 @@ def getTaxisByDateRange(chicagoAnalyzer, num, initialDate, finalDate):
 
 def mejorHorario(chicagoAnalyzer, inferior, superior, idStart, idEnd):
     """
-    Req C\n
+    Req C
     Returns:
     DateTime, Arraylist, float
     """
