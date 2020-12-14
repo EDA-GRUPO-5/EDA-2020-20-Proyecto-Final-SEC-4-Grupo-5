@@ -53,7 +53,22 @@ def optionThree():
     """
     Req A
     """
-    pass
+    x = True
+    while x:
+        try:
+            m = int(input('Número de compañias a retornar con más taxis afiliados: ')) 
+            n = int(input('Número de compañias a retornar con más servicios prestados: '))
+
+        except ValueError:
+            print('\nIngrese valores validos.\n')
+        else:
+            resultado = controller.reporteInformacion(analyzer, m, n)
+            print('\nNúmero total de taxis: ', resultado[0])
+            print('Número total de compañias: ', resultado[1])
+            print('Top de compañias con más taxis afiliados: ', resultado[2])
+            print('Top de compañias con más servicios prestados: ', resultado[3])
+
+            x = False
 
 def optionFour():
     """
